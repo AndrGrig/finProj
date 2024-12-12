@@ -13,6 +13,8 @@ jobs:
       - name: Download parameter artifact from first workflow
         uses: actions/download-artifact@v4
         with:
+          github-token: ${{ secrets.GIT_PAT }}
+          run-id: ${{ github.event.workflow_run.id }}
           name: ec2-ip
 
       - name: Read parameters from the file and Get EC2 IP
