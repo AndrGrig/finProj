@@ -4,6 +4,7 @@ on:
   push:
     paths-ignore:
       - 'App/**'
+      - '.github/workflows/app-ci.yml'
       - 'README.md'
     branches:
       - main
