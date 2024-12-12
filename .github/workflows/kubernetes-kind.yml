@@ -10,11 +10,16 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Get EC2 IP
-        run: |
-          echo "Using EC2 IP: ${{ github.event.client_payload.ec2_ip }}"
-          echo "EC2_IP=${{ github.event.client_payload.ec2_ip }}" >> $GITHUB_ENV
+      - name: Download parameter artifact from first workflow
+        uses: actions/download-artifact@v3
+        with:
+          name: ec2-ip
 
+      - name: Read parameters from the file and Get EC2 IP
+        run: |
+          source ec2_ip.txt  # Load the variables into the shell
+          echo "EC2_IP=$(cat ec2_ip.txt)" >> $GITHUB_ENV
+          echo $EC2_IP
       
       - name: Install Kind on EC2
         uses: appleboy/ssh-action@v1.2.0
