@@ -17,10 +17,21 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: 3.x
+    - name: Install Python
+      run: |
+        sudo yum update -y
+        sudo yum install python3 -y
+        sudo yum install -y python3-pip
+        python3 -m pip install --upgrade pip
+
+    - name: Install Docker
+      run: |
+        sudo yum install -y docker
+        sudo systemctl start docker
+        sudo systemctl enable docker
+        sudo usermod -aG docker $USER
+        newgrp docker
+        sudo chmod 666 /var/run/docker.sock
 
     - name: Install Dependencies
       run: |
