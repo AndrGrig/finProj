@@ -20,7 +20,7 @@ jobs:
       - name: Read parameters from the file and Get EC2 IP
         run: |
           source ec2_ip.txt  # Load the variables into the shell
-          echo "EC2_IP=$(cat ec2_ip.txt)" >> $GITHUB_ENV
+          echo "EC2_IP"=`cat ec2_ip.txt` >> $GITHUB_ENV
           echo $EC2_IP
       
       - name: Install Kind on EC2
