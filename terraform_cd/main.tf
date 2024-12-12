@@ -53,7 +53,7 @@ resource "aws_instance" "k8s_node" {
 }
 
 resource "aws_ebs_volume" "mysql_volume" {
-  availability_zone = "us-east-1d"
+  availability_zone = "us-east-1a"
   size              = var.mysql_volume_size
   tags = {
     Name = "MySQL-Volume"
