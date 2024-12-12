@@ -2,6 +2,9 @@ name: Terraform_Infrastructure_Setup
 
 on:
   push:
+    paths-ignore:
+      - 'App/**'
+      - 'README.md'
     branches:
       - main
 
@@ -41,12 +44,6 @@ jobs:
       run: terraform apply -auto-approve tfplan
       working-directory: ./terraform_cd
 
-    - name: Install Python dependencies
-      run: |
-        sudo yum update -y
-        sudo yum install -y python3-pip
-        python3 -m pip install --upgrade pip
-        pip3 install pynacl
     - name: Get EC2 Public IP
       id: get-ec2-ip
       run: |

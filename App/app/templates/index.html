@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery</title>
+</head>
+<body>
+    <h1>Photo Gallery</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit">Upload Photo</button>
+    </form>
+
+    <h2>Uploaded Photos</h2>
+    <ul>
+        {% for photo in photos %}
+        <li>
+            <img src="https://{{ config['S3_BUCKET'] }}.s3.amazonaws.com/{{ photo }}" alt="{{ photo }}" width="200">
+            <p>{{ photo }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
