@@ -78,7 +78,7 @@ jobs:
     - name: Commit Version Bump
       run: |
         git config user.name "AndrGrig"
-        git config user.email "andreygrigorenko@gmail.com" //git config user.email "actions@github.com"
+        git config user.email "andreygrigorenko@gmail.com"
         git add App/VERSION
         git commit -m "Bump version to ${{ env.new_version }}"
         git push
