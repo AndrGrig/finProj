@@ -1,6 +1,5 @@
 name: Application_CI
 
-
 on:
   push:
     branches:
