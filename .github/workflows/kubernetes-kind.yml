@@ -1,8 +1,10 @@
-name: Kubernetes Deployment
+name: K8S_Deployment
 
 on:
-  repository_dispatch:
-    types: [deploy-to-kubernetes]
+  workflow_run:
+    workflows: ["Terraform_Infrastructure_Setup"]  # The name of the first workflow
+    types:
+      - completed  # Trigger when the first workflow is completed
 
 jobs:
   deploy:
