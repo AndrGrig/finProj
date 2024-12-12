@@ -39,10 +39,10 @@ jobs:
         pip install pytest
 
     - name: Run Unit Tests
-      run: pytest App/tests/test_app.py
+      run: pytest tests/test_app.py
 
     - name: Run Integration Tests
-      run: pytest App/tests/test_integration.py
+      run: pytest tests/test_integration.py
 
     - name: Build Docker Image
       run: |
