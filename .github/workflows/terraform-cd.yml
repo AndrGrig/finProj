@@ -1,0 +1,69 @@
+name: Terraform_Infrastructure_Setup
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: self-hosted
+    outputs:
+      ec2_ip: ${{ steps.get-ec2-ip.outputs.ec2_ip }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+  
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.0
+
+    - name: Initialize Terraform
+      run: terraform init
+      working-directory: ./terraform_cd
+
+    - name: Validate Terraform
+      run: terraform validate
+      working-directory: ./terraform_cd
+
+    - name: Plan Infrastructure
+      run: terraform plan -out=tfplan
+      working-directory: ./terraform_cd
+
+    - name: Apply Infrastructure
+      run: terraform apply -auto-approve tfplan
+      working-directory: ./terraform_cd
+
+    - name: Install Python dependencies
+      run: |
+        sudo yum update -y
+        sudo yum install -y python3-pip
+        python3 -m pip install --upgrade pip
+        pip3 install pynacl
+    - name: Get EC2 Public IP
+      id: get-ec2-ip
+      run: |
+        unset TF_LOG
+        EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip | tr -d '\n')
+        echo "ec2_ip=$EC2_PUBLIC_IP" >> $GITHUB_OUTPUT
+      working-directory: ./terraform_cd
+
+    - name: Save EC2 IP as artifact
+      run: |
+        echo "${{ steps.get-ec2-ip.outputs.ec2_ip }}" > ec2_ip.txt
+      
+    - name: Upload EC2 IP artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ec2-ip
+        path: ec2_ip.txt
+        retention-days: 1
+    
+      
