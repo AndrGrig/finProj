@@ -60,7 +60,7 @@ jobs:
         echo "${{ steps.get-ec2-ip.outputs.ec2_ip }}" > ec2_ip.txt
       
     - name: Upload EC2 IP artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ec2-ip
         path: ec2_ip.txt
