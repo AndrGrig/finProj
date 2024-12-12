@@ -2,7 +2,7 @@ name: K8S_Deployment
 
 on:
   workflow_run:
-    workflows: ["Terraform_Infrastructure_Setup"]  # The name of the first workflow
+    workflows: ["Terraform_Infrastructure_Setup"]
     types:
       - completed  # Trigger when the first workflow is completed
 
