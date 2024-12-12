@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - 'VERSION'
+      - 'App/VERSION'
   workflow_run:
     workflows: ["K8S_Deployment"]
     types:
