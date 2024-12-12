@@ -16,6 +16,9 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GIT_PAT }}
+        fetch-depth: 0
 
     - name: Install Python
       run: |
@@ -76,9 +79,12 @@ jobs:
         echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
 
     - name: Commit Version Bump
+      env:
+        GIT_PAT: ${{ secrets.GIT_PAT }}
       run: |
         git config user.name "AndrGrig"
         git config user.email "andreygrigorenko@gmail.com"
+        git remote set-url origin https://${GIT_PAT}@github.com/AndrGrig/finProj.git
         git add App/VERSION
         git commit -m "Bump version to ${{ env.new_version }}"
         git push
