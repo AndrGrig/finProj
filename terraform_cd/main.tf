@@ -42,7 +42,7 @@ resource "aws_route_table_association" "main" {
 }
 
 resource "aws_instance" "k8s_node" {
-  ami           = data.aws_ami.latest_centos.id
+  ami           = data.aws_ami.latest_amazon_linux.id
   instance_type = var.instance_type
   key_name      = var.key_name
   subnet_id     = aws_subnet.main.id
@@ -74,19 +74,12 @@ resource "aws_s3_bucket" "photos_bucket" {
   }
 }
 
-data "aws_ami" "latest_centos" {
-
+data "aws_ami" "latest_amazon_linux" {
     most_recent = true
-
     filter {
         name   = "name"
-        values = ["CentOS Linux 7*"]
+        values = ["amzn2-ami-hvm-*-x86_64-gp2"]
     }
 
-    filter {
-        name = "virtualization-type"
-        values = ["hvm"]
-    }
-
-    owners = ["099720109477"]
+    owners      = ["amazon"]
 }
