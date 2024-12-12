@@ -1,0 +1,63 @@
+name: Kubernetes Deployment
+
+on:
+  repository_dispatch:
+    types: [deploy-to-kubernetes]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Get EC2 IP
+        run: |
+          echo "Using EC2 IP: ${{ github.event.client_payload.ec2_ip }}"
+          echo "EC2_IP=${{ github.event.client_payload.ec2_ip }}" >> $GITHUB_ENV
+
+      
+      - name: Install Kind on EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ EC2_IP }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            sudo yum update -y
+
+            # Install Docker
+            sudo yum install -y docker
+            sudo systemctl start docker
+            sudo systemctl enable docker
+            sudo usermod -aG docker $USER
+            newgrp docker
+            sudo chmod 666 /var/run/docker.sock
+
+            # Install Kind
+            curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
+            chmod +x ./kind
+            sudo mv ./kind /usr/local/bin/kind
+
+            # Install kubectl
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            chmod +x kubectl
+            sudo mv kubectl /usr/local/bin/kubectl
+
+            # Verify kubectl installation
+            kubectl version --client
+
+            # Create a Kind cluster
+            kind create cluster --name kind-cluster --config - <<EOF
+            kind: Cluster
+            apiVersion: kind.x-k8s.io/v1alpha4
+            nodes:
+            - role: control-plane
+              extraPortMappings:
+              - containerPort: 80
+                hostPort: 80
+              - containerPort: 30080
+                hostPort: 30080
+                protocol: TCP
+            EOF
+
+            # Verify cluster
+            kubectl cluster-info --context kind-kind-cluster
