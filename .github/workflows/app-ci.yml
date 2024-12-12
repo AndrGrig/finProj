@@ -39,7 +39,7 @@ jobs:
         docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app:latest App
 
     - name: Trivy Security Scan
-      uses: aquasecurity/trivy-action@v0.9.1
+      uses: aquasecurity/trivy-action@0.28.0
       with:
         image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app:latest
 

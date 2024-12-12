@@ -7,7 +7,6 @@ def create_app():
         'DATABASE_URL', 'mysql+pymysql://user:password@db_address/db_name'
     )
     app.config['S3_BUCKET'] = os.getenv('S3_BUCKET', 'djans-photos-bucket')
-    app.secret_key = os.getenv('SECRET_KEY', 'your_secret_key')
 
     from .routes import main
     app.register_blueprint(main)
