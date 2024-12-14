@@ -6,6 +6,7 @@ on:
       - 'App/**'
       - '.github/workflows/app-ci.yml'
       - 'README.md'
+      - 'helm/**'
     branches:
       - main
 
