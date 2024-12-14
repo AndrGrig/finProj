@@ -84,7 +84,9 @@ jobs:
             cd ~/helm-charts/helm
             pwd;ls -la
             echo "before installation"
-            ls -la mysql
+            ls -la mysql/
+            mv mysql/chart.yaml mysql/Chart.yaml
+            ls -la mysql/
             helm install mysql mysql --set mysql.rootPassword=mysecurepassword
 
             # Deploy Python App 
