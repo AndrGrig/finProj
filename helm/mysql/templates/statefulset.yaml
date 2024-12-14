@@ -22,11 +22,19 @@ spec:
             secretKeyRef:
               name: mysql-secret
               key: root-password
+        - name: MYSQL_DATABASE
+          value: photoDB
         ports:
         - containerPort: 3306
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
+        - name: init-script
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: init-script
+        configMap:
+          name: mysql-init-script
   volumeClaimTemplates:
   - metadata:
       name: mysql-persistent-storage
