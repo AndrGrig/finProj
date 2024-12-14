@@ -3,4 +3,4 @@ image:
   tag: latest
 
 service:
-  nodePort: 30000
+  nodePort: 30080
