@@ -19,3 +19,15 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
         - containerPort: 5000
+        env:
+        - name: DB_HOST
+          value: mysql  # This matches the MySQL service name
+        - name: DB_USER
+          value: root
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: root-password
+        - name: DB_NAME
+          value: photoDB
