@@ -34,7 +34,7 @@ spec:
       volumes:
       - name: init-script
         configMap:
-          name: mysql-init-script
+          name: mysql-init-script    # Fix this line
   volumeClaimTemplates:
   - metadata:
       name: mysql-persistent-storage
