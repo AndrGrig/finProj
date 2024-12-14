@@ -54,7 +54,7 @@ jobs:
             mkdir -p ~/helm-charts
 
     - name: Copy Helm Charts to EC2
-      uses: appleboy/scp-action@v0.17.0
+      uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ env.EC2_IP }}
         username: ec2-user
