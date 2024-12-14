@@ -23,7 +23,7 @@ spec:
               name: mysql-secret
               key: root-password
         - name: MYSQL_DATABASE
-          value: photoDB
+          value: {{ .Values.mysql.database }}
         ports:
         - containerPort: 3306
         volumeMounts:
@@ -34,7 +34,7 @@ spec:
       volumes:
       - name: init-script
         configMap:
-          name: mysql-init-script    # Fix this line
+          name: mysql-init-script
   volumeClaimTemplates:
   - metadata:
       name: mysql-persistent-storage
