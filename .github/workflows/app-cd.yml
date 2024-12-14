@@ -89,9 +89,9 @@ jobs:
             mv python-app/chart.yaml python-app/Chart.yaml
             ls -la mysql/
             ls -la python-app/
-            helm install mysql mysql --set mysql.rootPassword=mysecurepassword
+            helm upgrade --install mysql mysql --set mysql.rootPassword=mysecurepassword
 
             # Deploy Python App 
-            helm install python-app python-app \
+            helm upgrade --install python-app python-app \
               --set image.repository=${{ secrets.DOCKER_HUB_USERNAME }}/flask-app \
               --set image.tag=latest
