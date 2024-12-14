@@ -79,9 +79,12 @@ jobs:
           port: 22
           script: |
             # Deploy MySQL
-            helm install mysql helm-charts/helm/mysql --set mysql.rootPassword=mysecurepassword
+            pwd
+            cd ~/helm-charts/helm
+            pwd;ls -la
+            helm install mysql mysql --set mysql.rootPassword=mysecurepassword
 
             # Deploy Python App 
-            helm install python-app helm-charts/helm/python-app \
+            helm install python-app python-app \
               --set image.repository=${{ secrets.DOCKER_HUB_USERNAME }}/flask-app \
               --set image.tag=latest

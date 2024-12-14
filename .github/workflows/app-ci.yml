@@ -7,6 +7,7 @@ on:
     paths-ignore:
       - 'App/VERSION'
       - 'helm/**'
+      - '.github/workflows/app-cd.yml'
   workflow_run:
     workflows: ["K8S_Deployment"]
     types:
