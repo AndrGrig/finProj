@@ -1,6 +1,9 @@
 name: K8S_Deployment
 
 on:
+  push:
+    paths:
+      - '.github/workflows/kubernetes-kind.yml'
   workflow_run:
     workflows: ["Terraform_Infrastructure_Setup"]
     types:
