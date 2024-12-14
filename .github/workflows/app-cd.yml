@@ -86,7 +86,9 @@ jobs:
             echo "before installation"
             ls -la mysql/
             mv mysql/chart.yaml mysql/Chart.yaml
+            mv python-app/chart.yaml python-app/Chart.yaml
             ls -la mysql/
+            ls -la python-app/
             helm install mysql mysql --set mysql.rootPassword=mysecurepassword
 
             # Deploy Python App 
