@@ -42,7 +42,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            ssh -o StrictHostKeyChecking=no ec2-user@${{ steps.read-ip.outputs.ec2_ip }} << EOF
             # Install Helm
             curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
             chmod +x get_helm.sh
@@ -62,4 +61,3 @@ jobs:
             helm upgrade --install python-app helm/python-app \
               --set image.repository=${{ secrets.DOCKER_HUB_USERNAME }}/flask-app \
               --set image.tag=latest
-            EOF

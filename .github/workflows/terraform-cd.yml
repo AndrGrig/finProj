@@ -5,6 +5,7 @@ on:
     paths-ignore:
       - 'App/**'
       - '.github/workflows/app-ci.yml'
+      - '.github/workflows/app-cd.yml'
       - 'README.md'
       - 'helm/**'
     branches:
