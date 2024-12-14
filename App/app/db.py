@@ -5,8 +5,8 @@ def get_db():
     return pymysql.connect(
         host=os.getenv('DB_HOST', 'db_address'),
         user=os.getenv('DB_USER', 'user'),
-        password=os.getenv('DB_PASSWORD', 'password'),
-        database=os.getenv('DB_NAME', 'db_name')
+        password=os.getenv('DB_PASSWORD', 'mysecurepassword'),
+        database=os.getenv('DB_NAME', 'photoDB')
     )
 
 def add_photo_record(photo_name):

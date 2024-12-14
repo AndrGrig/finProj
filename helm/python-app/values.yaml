@@ -1,0 +1,6 @@
+image:
+  repository: agrigor1/flask-app
+  tag: latest
+
+service:
+  nodePort: 30000

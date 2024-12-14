@@ -1,0 +1,65 @@
+name: Application CD
+
+on:
+  workflow_run:
+    workflows: ["Application_CI"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Add SSH Key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+    - name: Download parameter artifact from first workflow
+      uses: actions/download-artifact@v4
+      with:
+        github-token: ${{ secrets.GIT_PAT }}
+        run-id: ${{ github.event.workflow_run.id }}
+        name: ec2-ip
+
+    - name: Read parameters from the file and Get EC2 IP
+      run: |
+        EC2_IP=$(cat ec2_ip.txt | tr -d '\n\r')
+        echo "EC2_IP=${EC2_IP}" >> $GITHUB_ENV
+        echo "Found EC2 IP: ${EC2_IP}"
+
+    - name: SSH and Deploy to Kind
+      uses: appleboy/ssh-action@v1.2.0
+      env:
+          EC2_IP: ${{ env.EC2_IP }}
+      with:
+          host: ${{ env.EC2_IP }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            ssh -o StrictHostKeyChecking=no ec2-user@${{ steps.read-ip.outputs.ec2_ip }} << EOF
+            # Install Helm
+            curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+            chmod +x get_helm.sh
+            ./get_helm.sh
+            helm version
+
+            # Install kubectl (if not already installed)
+            # curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            # chmod +x kubectl
+            # sudo mv kubectl /usr/local/bin
+            # kubectl version --client
+
+            # Deploy MySQL
+            helm upgrade --install mysql helm/mysql --set mysql.rootPassword=mysecurepassword
+
+            # Deploy Python App
+            helm upgrade --install python-app helm/python-app \
+              --set image.repository=${{ secrets.DOCKER_HUB_USERNAME }}/flask-app \
+              --set image.tag=latest
+            EOF
