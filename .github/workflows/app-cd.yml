@@ -6,10 +6,10 @@ on:
       - main
     paths:
       - 'helm/**'
-  workflow_run:
-    workflows: ["Application_CI"]
-    types:
-      - completed
+  # workflow_run:
+  #   workflows: ["Application_CI"]
+  #   types:
+  #     - completed
 
 jobs:
   deploy:
