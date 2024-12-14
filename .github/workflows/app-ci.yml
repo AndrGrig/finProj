@@ -6,6 +6,7 @@ on:
       - main
     paths-ignore:
       - 'App/VERSION'
+      - 'helm/**'
   workflow_run:
     workflows: ["K8S_Deployment"]
     types:

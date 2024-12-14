@@ -1,6 +1,11 @@
 name: Application CD
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'helm'
   workflow_run:
     workflows: ["Application_CI"]
     types:
