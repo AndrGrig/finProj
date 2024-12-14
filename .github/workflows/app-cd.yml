@@ -32,7 +32,7 @@ jobs:
         echo "EC2_IP=${EC2_IP}" >> $GITHUB_ENV
         echo "Found EC2 IP: ${EC2_IP}"
 
-    - name: SSH and Deploy to Kind
+    - name: SSH and Deploy Applications
       uses: appleboy/ssh-action@v1.2.0
       env:
           EC2_IP: ${{ env.EC2_IP }}
@@ -55,9 +55,9 @@ jobs:
             # kubectl version --client
 
             # Deploy MySQL
-            helm upgrade --install mysql helm/mysql --set mysql.rootPassword=mysecurepassword
+            helm install mysql helm/mysql --set mysql.rootPassword=mysecurepassword
 
             # Deploy Python App
-            helm upgrade --install python-app helm/python-app \
+            helm install python-app helm/python-app \
               --set image.repository=${{ secrets.DOCKER_HUB_USERNAME }}/flask-app \
               --set image.tag=latest
