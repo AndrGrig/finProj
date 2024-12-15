@@ -67,7 +67,7 @@
         </form>
     </div>
 
-    <div class="gallery">
+    <!-- <div class="gallery">
         {% for photo in photos %}
         <div class="photo-item">
             <img src="https://s3.us-east-1.amazonaws.com/{{ config['S3_BUCKET'] }}/{{ photo }}" 
@@ -76,6 +76,19 @@
             <p>{{ photo }}</p>
         </div>
         {% endfor %}
+    </div> -->
+
+    <div class="gallery">
+        {% for photo in photos %}
+        <div class="photo-item">
+            <img src="{{ photo.url }}" 
+                 alt="{{ photo.key }}"
+                 loading="lazy">
+            <p>{{ photo.key }}</p>
+        </div>
+        {% endfor %}
     </div>
+
+
 </body>
 </html>
