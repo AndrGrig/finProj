@@ -4,10 +4,11 @@ on:
   push:
     paths-ignore:
       - 'App/**'
+      - 'helm/**'
+      - 'README.md'
+      - '.github/workflows/kubernetes-kind.yml'
       - '.github/workflows/app-ci.yml'
       - '.github/workflows/app-cd.yml'
-      - 'README.md'
-      - 'helm/**'
     branches:
       - main
 

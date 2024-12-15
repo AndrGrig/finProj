@@ -8,10 +8,10 @@ on:
     paths:
       - 'helm/**'
       - '.github/workflows/app-cd.yml'
-  # workflow_run:
-  #   workflows: ["Application_CI"]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: ["Application_CI"]
+    types:
+      - completed
 
 jobs:
   deploy:
@@ -30,7 +30,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         github-token: ${{ secrets.GIT_PAT }}
-        run-id: "12332076920"
+        run-id: "12341727354"
         name: ec2-ip
 
     - name: Read parameters from the file and Get EC2 IP
