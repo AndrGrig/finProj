@@ -1,4 +1,4 @@
-<!-- <!-- <!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -24,7 +24,9 @@
 </body>
 </html>
 
-<!-- ================================================================= -->
+================================================================= -->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,61 +71,12 @@
     <div class="gallery">
         {% for photo in photos %}
         <div class="photo-item">
-            <img src="https://s3.us-east-1.amazonaws.com/{{ config['S3_BUCKET'] }}/{{ photo }}" 
+            <img src="https://s3.us-east-1.amazonaws.com/{{ config['S3_BUCKET'] }}" 
                  alt="{{ photo }}"
                  loading="lazy">
             <p>{{ photo }}</p>
         </div>
         {% endfor %}
-    </div>
-</body>
-</html>
-
-========================================================================================================================= -->
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload and Display Images</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .container { width: 80%; margin: 0 auto; }
-        .gallery { display: flex; flex-wrap: wrap; gap: 20px; }
-        .gallery img { width: 300px; height: 200px; object-fit: cover; border-radius: 8px; }
-        .upload-form { margin-top: 20px; }
-        .alert { padding: 10px; margin: 10px 0; border-radius: 4px; }
-        .alert-success { background-color: #d4edda; color: #155724; }
-        .alert-danger { background-color: #f8d7da; color: #721c24; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Upload and Display Images</h1>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <!-- Upload form -->
-        <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" required>
-            <button type="submit">Upload</button>
-        </form>
-
-        <!-- Display images -->
-        <div class="gallery">
-            {% for image in images %}
-                <img src="{{ image }}" alt="Image from S3">
-            {% else %}
-                <p>No images uploaded yet.</p>
-            {% endfor %}
-        </div>
     </div>
 </body>
 </html>
