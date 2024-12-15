@@ -25,14 +25,32 @@ def test_upload_to_s3(mock_s3_client):
     mock_s3_client.upload_fileobj.assert_called_once_with(file, 'djans-photos-bucket', 'test_photo.jpg')
 
 
+# def test_list_photos(mock_s3_client):
+#     mock_s3_client.list_objects_v2.return_value = {
+#         'Contents': [{'Key': 'photo1.jpg'}, {'Key': 'photo2.jpg'}]
+#     }
+
+#     photos = list_photos()
+
+#     assert photos == ['photo1.jpg', 'photo2.jpg']
+
 def test_list_photos(mock_s3_client):
+    # Mock the list_objects_v2 response
     mock_s3_client.list_objects_v2.return_value = {
         'Contents': [{'Key': 'photo1.jpg'}, {'Key': 'photo2.jpg'}]
     }
+    
+    # Mock the generate_presigned_url method
+    mock_s3_client.generate_presigned_url.side_effect = lambda operation_name, Params, ExpiresIn: \
+        f"https://presigned-url/{Params['Key']}"
 
     photos = list_photos()
 
-    assert photos == ['photo1.jpg', 'photo2.jpg']
+    expected_photos = [
+        {'key': 'photo1.jpg', 'url': 'https://presigned-url/photo1.jpg'},
+        {'key': 'photo2.jpg', 'url': 'https://presigned-url/photo2.jpg'}
+    ]
+    assert photos == expected_photos
 
                                             
 def test_add_photo_record(mock_db):
