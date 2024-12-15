@@ -2,4 +2,5 @@ flask
 boto3
 pymysql
 pytest           
-pytest-mock      
+pytest-mock
+cryptography     
