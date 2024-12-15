@@ -70,6 +70,14 @@ resource "aws_security_group" "k8s_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    description = "HTTPS"
+    from_port   = 30080
+    to_port     = 30080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -87,6 +95,7 @@ resource "aws_instance" "k8s_node" {
   key_name      = var.key_name
   subnet_id     = aws_subnet.main.id
   vpc_security_group_ids = [aws_security_group.k8s_sg.id]
+  availability_zone = var.availability_zone
 
   tags = {
     Name = "K8s-EC2"
@@ -94,7 +103,7 @@ resource "aws_instance" "k8s_node" {
 }
 
 resource "aws_ebs_volume" "mysql_volume" {
-  availability_zone = "us-east-1c"
+  availability_zone = var.availability_zone
   size              = var.mysql_volume_size
   tags = {
     Name = "MySQL-Volume"
