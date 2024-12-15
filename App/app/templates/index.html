@@ -25,8 +25,6 @@
 </html>
 
 ================================================================= -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,7 +69,7 @@
     <div class="gallery">
         {% for photo in photos %}
         <div class="photo-item">
-            <img src="https://s3.us-east-1.amazonaws.com/{{ config['S3_BUCKET'] }}" 
+            <img src="https://s3.us-east-1.amazonaws.com/{{ config['S3_BUCKET'] }}/{{ photo }}" 
                  alt="{{ photo }}"
                  loading="lazy">
             <p>{{ photo }}</p>
