@@ -1,6 +1,7 @@
 name: Terraform_Infra
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - '.github/workflows/terraform-infra.yml'
