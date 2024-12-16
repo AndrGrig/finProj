@@ -1,4 +1,4 @@
-name: Application CD
+name: Application_CD
 
 on:
   workflow_dispatch:
@@ -26,11 +26,19 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
+    - name: Get latest successful workflow run ID
+      id: get_run_id
+      run: |
+        # Fetch the latest successful run ID for the "Terraform_Infra" workflow
+        run_id=$(gh run list --workflow=terraform-infra.yml --limit 1 --json status,url | jq -r '.[] | select(.status == "success") | .id' | head -n 1)
+        echo "Latest successful workflow run ID: $run_id"
+        echo "::set-output name=run_id::$run_id
+
     - name: Download parameter artifact from first workflow
       uses: actions/download-artifact@v4
       with:
         github-token: ${{ secrets.GIT_PAT }}
-        run-id: "12341727354"
+        run-id: $run_id
         name: ec2-ip
 
     - name: Read parameters from the file and Get EC2 IP

@@ -3,11 +3,12 @@ name: K8S_Deployment
 on:
   push:
     paths:
-      - '.github/workflows/kubernetes-kind.yml'
+      - '.github/workflows/k8s-deployment.yml'
+      - 'terraform_cd/**'
   workflow_run:
-    workflows: ["Terraform_Infrastructure_Setup"]
+    workflows: ["Terraform_Infra"]
     types:
-      - completed  # Trigger when the first workflow is completed
+      - completed  # Trigger when the Terraform_Infra workflow is completed
 
 jobs:
   deploy:

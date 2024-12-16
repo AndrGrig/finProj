@@ -1,14 +1,10 @@
-name: Terraform_Infrastructure_Setup
+name: Terraform_Infra
 
 on:
   push:
-    paths-ignore:
-      - 'App/**'
-      - 'helm/**'
-      - 'README.md'
-      - '.github/workflows/kubernetes-kind.yml'
-      - '.github/workflows/app-ci.yml'
-      - '.github/workflows/app-cd.yml'
+    paths:
+      - '.github/workflows/terraform-infra.yml'
+      - 'terraform_cd/**'
     branches:
       - main
 
