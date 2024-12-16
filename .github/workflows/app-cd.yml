@@ -44,6 +44,14 @@ jobs:
 
         # Extract the latest successful run ID
         latest_run_id=$(echo $response | jq -r '.workflow_runs[0].id')
+
+        if [ "$latest_run_id" != "null" ]; then
+          echo "Latest Successful Run ID of test123 workflow: $latest_run_id"
+          echo "LATEST_RUN_ID=$latest_run_id" >> $GITHUB_ENV
+        else
+          echo "No successful runs found for test123 workflow."
+          exit 1
+        fi
         
         echo "Latest Successful Run ID: $latest_run_id"
 
@@ -51,7 +59,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         github-token: ${{ secrets.GIT_PAT }}
-        run-id: ${{ latest_run_id }}
+        run-id: ${{ env.LATEST_RUN_ID }}
         name: ec2-ip
 
     - name: Read parameters from the file and Get EC2 IP
