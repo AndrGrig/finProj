@@ -9,13 +9,14 @@ on:
       - 'helm/**'
       - '.github/workflows/app-cd.yml'
   workflow_run:
-    workflows: ["Application_CI"]
+    workflows: ["Application_CI", "Terraform_Infra"]
     types:
       - completed
 
 jobs:
   deploy:
     runs-on: self-hosted
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
     - name: Checkout Code
@@ -26,19 +27,31 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
+    # - name: Get latest successful workflow run ID
+    #   id: get_run_id
+    #   run: |
+    #     # Fetch the latest successful run ID for the "Terraform_Infra" workflow
+    #     run_id=$(gh run list --workflow=terraform-infra.yml --limit 1 --json status,url | jq -r '.[] | select(.status == "success") | .id' | head -n 1)
+    #     echo "Latest successful workflow run ID: $run_id"
+    #     echo "::set-output name=run_id::$run_id
     - name: Get latest successful workflow run ID
-      id: get_run_id
       run: |
-        # Fetch the latest successful run ID for the "Terraform_Infra" workflow
-        run_id=$(gh run list --workflow=terraform-infra.yml --limit 1 --json status,url | jq -r '.[] | select(.status == "success") | .id' | head -n 1)
-        echo "Latest successful workflow run ID: $run_id"
-        echo "::set-output name=run_id::$run_id
+        # Fetch the latest successful workflow run using GitHub API
+        response=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.GIT_PAT }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/terraform-infra.yml/runs?status=success&per_page=1")
+
+        # Extract the latest successful run ID
+        latest_run_id=$(echo $response | jq -r '.workflow_runs[0].id')
+        
+        echo "Latest Successful Run ID: $latest_run_id"
 
     - name: Download parameter artifact from first workflow
       uses: actions/download-artifact@v4
       with:
         github-token: ${{ secrets.GIT_PAT }}
-        run-id: $run_id
+        run-id: $latest_run_id
         name: ec2-ip
 
     - name: Read parameters from the file and Get EC2 IP
