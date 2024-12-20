@@ -95,4 +95,4 @@ jobs:
         git remote set-url origin https://${GIT_PAT}@github.com/${GIT_USERNAME}/finProj.git
         git add App/VERSION
         git commit -m "Bump version to ${{ env.new_version }}"
-        git push
+        git push --force
