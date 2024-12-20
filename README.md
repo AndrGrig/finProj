@@ -1,3 +1,4 @@
+Manual operations:
 1. Create S3 bucket for terraform state 'djans-backend-s3'
 2. Update Bastion role to EMR_EC2_DefaultRole.
 3. Grant Admin permissions to EMR_EC2_DefaultRole.
@@ -5,7 +6,7 @@
 5. Update SSH key of the lab in repository secrets.
 6. Run terraform.
 7. Manually update role of K8S EC2 to EMR-Role
-8. Add the floowing JSON to EMR-Role:
+8. Add the following JSON to EMR-Role:
 
 {
 	"Version": "2012-10-17",
@@ -27,4 +28,4 @@
         }
 	]
 }
-9. Goto public IP of K8S EC2/30080
+9. Goto public IP of K8S_EC2/30080
