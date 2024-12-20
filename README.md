@@ -1,12 +1,10 @@
 Manual operations:
 1. Create S3 bucket for terraform state 'djans-backend-s3'
-2. Update Bastion role to EMR_EC2_DefaultRole.
-3. Grant Admin permissions to EMR_EC2_DefaultRole.
-4. Create GH runner with terraform on Bastion.
-5. Update SSH key of the lab in repository secrets.
-6. Run terraform.
-7. Manually update role of K8S EC2 to EMR-Role
-8. Add the following JSON to EMR-Role:
+2. Update SSH key of the lab in repository secrets.
+3. Update Bastion role to EMR_EC2_DefaultRole (existing role).
+4. SSH to Bastion & create GH runner on Bastion.
+5. Grant Admin permissions to EMR_EC2_DefaultRole.
+6. Add the following JSON to EMR-Role:
 
 {
 	"Version": "2012-10-17",
@@ -28,4 +26,5 @@ Manual operations:
         }
 	]
 }
-9. Goto public IP of K8S_EC2/30080
+7. Run terraform.
+8. Goto public IP of K8S_EC2/30080
