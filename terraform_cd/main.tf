@@ -97,6 +97,7 @@ resource "aws_instance" "k8s_node" {
   vpc_security_group_ids = [aws_security_group.k8s_sg.id]
   availability_zone = var.availability_zone
 
+  iam_instance_profile = "EMR_EC2_DefaultRole"
   tags = {
     Name = "K8s-EC2"
   }
