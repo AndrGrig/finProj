@@ -87,11 +87,11 @@ jobs:
     - name: Commit Version Bump
       env:
         GIT_PAT: ${{ secrets.GIT_PAT }}
-        GIT_USERNAME: ${{ env.GIT_USERNAME }}
-        GIT_EMAIL: ${{ env.GIT_EMAIL }}
+        GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+        GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
       run: |
-        git config user.name ${GIT_USERNAME}
-        git config user.email ${env.GIT_EMAIL}
+        git config user.name "$GIT_USERNAME"
+        git config user.email "$env.GIT_EMAIL"
         git remote set-url origin https://${GIT_PAT}@github.com/${GIT_USERNAME}/finProj.git
         git add App/VERSION
         git commit -m "Bump version to ${{ env.new_version }}"
