@@ -17,7 +17,7 @@ import os
 
 
 def create_app(testing=False):
-    app = Flask(_name_)
+    app = Flask(__name__)
     
     if testing:
         app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
