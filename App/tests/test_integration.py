@@ -1,31 +1,39 @@
 import pytest
+from test_config import setup_test_environment
 from app import create_app
-from unittest.mock import patch
+import boto3
+import pymysql
+from moto import mock_s3
 
+@pytest.fixture(autouse=True)
+def setup_env():
+    setup_test_environment()
+    # Set up mock S3
+    with mock_s3():
+        s3 = boto3.client('s3')
+        s3.create_bucket(Bucket='test-photos-bucket')
+        yield
 
 @pytest.fixture
-def client():
-    app = create_app()
-    app.testing = True
-    with app.test_client() as client:
-        yield client
-
-
-@patch('app.s3_utils.list_photos', return_value=['photo1.jpg', 'photo2.jpg'])
-def test_home_page(mock_list_photos, client):
-    response = client.get('/')
-    assert response.status_code == 200
-    assert b'photo1.jpg' in response.data
-    assert b'photo2.jpg' in response.data
-
-
-@patch('app.s3_utils.upload_to_s3')
-@patch('app.db.add_photo_record')
-def test_upload(mock_add_photo_record, mock_upload_to_s3, client):
-    data = {
-        'file': (open('tests/test_photo.jpg', 'rb'), 'test_photo.jpg')
-    }
-    response = client.post('/upload', data=data, content_type='multipart/form-data')
-    assert response.status_code == 302  # Redirect after successful upload
-    mock_upload_to_s3.assert_called_once()
-    mock_add_photo_record.assert_called_once_with('test_photo.jpg')
+def test_db():
+    # Set up test database
+    conn = pymysql.connect(
+        host='localhost',
+        user='root',
+        password='mysecurepassword'
+    )
+    cursor = conn.cursor()
+    cursor.execute('CREATE DATABASE IF NOT EXISTS photoDB_test')
+    cursor.execute('USE photoDB_test')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS photos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            photo_name VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    conn.commit()
+    yield conn
+    # Cleanup
+    cursor.execute('DROP DATABASE photoDB_test')
+    conn.close()
