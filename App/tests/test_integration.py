@@ -3,6 +3,28 @@ from app import create_app
 import boto3
 from moto import mock_aws
 import pymysql
+from unittest.mock import patch
+
+@pytest.fixture(autouse=True)
+def aws_credentials():
+    """Mocked AWS Credentials for moto."""
+    import os
+    os.environ['AWS_ACCESS_KEY_ID'] = 'testing'
+    os.environ['AWS_SECRET_ACCESS_KEY'] = 'testing'
+    os.environ['AWS_SECURITY_TOKEN'] = 'testing'
+    os.environ['AWS_SESSION_TOKEN'] = 'testing'
+    os.environ['AWS_DEFAULT_REGION'] = 'us-east-1'
+
+@pytest.fixture
+def s3():
+    with mock_aws():
+        yield boto3.client('s3')
+
+@pytest.fixture
+def s3_bucket(s3):
+    """Create a test S3 bucket."""
+    s3.create_bucket(Bucket='test-photos-bucket')
+    return s3
 
 @pytest.fixture
 def test_db():
@@ -65,3 +87,15 @@ def test_upload(client, s3_bucket, test_db):
     result = cursor.fetchone()
     assert result is not None
     assert result[0] == 'test_photo.jpg'
+
+def test_home_page(client, s3_bucket):
+    # Upload a test file to S3
+    s3_bucket.put_object(
+        Bucket='test-photos-bucket',
+        Key='photo1.jpg',
+        Body=b'test data'
+    )
+    
+    response = client.get('/')
+    assert response.status_code == 200
+    assert b'photo1.jpg' in response.data
