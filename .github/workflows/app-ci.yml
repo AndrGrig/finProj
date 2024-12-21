@@ -54,6 +54,11 @@ jobs:
       run: |
         cd App
         PYTHONPATH=$PYTHONPATH:$(pwd) pytest tests/test_app.py
+
+    - name: Clean up existing containers
+      run: |
+        # Stop and remove existing MySQL container if it exists
+        docker ps -a | grep test-mysql && docker rm -f test-mysql || true
     
     - name: Install Test Dependencies
       run: |
@@ -69,7 +74,15 @@ jobs:
           mysql:5.7
 
         # Wait for MySQL to be ready
-        sleep 20
+        echo "Waiting for MySQL to be ready..."
+        for i in {1..30}; do
+          if docker exec test-mysql mysqladmin ping -h localhost -u root -pmysecurepassword --silent; then
+            echo "MySQL is ready"
+            break
+          fi
+          echo "Waiting... ($i/30)"
+          sleep 2
+        done
 
     - name: Run Integration Tests
       env:
@@ -80,6 +93,11 @@ jobs:
       run: |
         cd App
         PYTHONPATH=$PYTHONPATH:$(pwd) pytest tests/test_integration.py -v
+
+    - name: Cleanup
+      if: always()
+      run: |
+        docker rm -f test-mysql || true
 
     - name: Get Current Version
       id: get_version
