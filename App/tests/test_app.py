@@ -22,7 +22,7 @@ def test_upload_to_s3(mock_s3_client):
 
     upload_to_s3(file)
 
-    mock_s3_client.upload_fileobj.assert_called_once_with(file, 'djans-photos-bucket', 'test_photo.jpg')
+    mock_s3_client.upload_fileobj.assert_called_once_with(file, 'djans-photo-bucket', 'test_photo.jpg')
 
 
 # def test_list_photos(mock_s3_client):

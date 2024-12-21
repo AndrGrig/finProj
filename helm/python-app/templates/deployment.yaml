@@ -34,6 +34,6 @@ spec:
         - name: DATABASE_URL
           value: "mysql+pymysql://root:$(DB_PASSWORD)@mysql/photoDB"
         - name: S3_BUCKET
-          value: "djans-photos-bucket"
+          value: "djans-photo-bucket"
         - name: FLASK_SECRET_KEY
           value: "your-dev-secret-key123456"

@@ -24,7 +24,7 @@ variable "key_name" {
 }
 
 variable "bucket_name" {
-  default = "djans-photos-bucket"
+  default = "djans-photo-bucket"
   description = "Name of the S3 bucket to store UI photos"
 }
 

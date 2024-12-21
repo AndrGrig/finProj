@@ -6,7 +6,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
         'DATABASE_URL', 'mysql+pymysql://user:mysecurepassword@db_address/photoDB'
     )
-    app.config['S3_BUCKET'] = os.getenv('S3_BUCKET', 'djans-photos-bucket')
+    app.config['S3_BUCKET'] = os.getenv('S3_BUCKET', 'djans-photo-bucket')
     # app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your-dev-secret-key123456')
     app.config['SECRET_KEY'] = os.urandom(24)
 
