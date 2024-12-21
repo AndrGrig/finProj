@@ -98,6 +98,12 @@ jobs:
         port: 22
         source: "helm/*"
         target: "~/helm-charts"
+      
+    - name: Get Version
+      id: get_version
+      run: |
+        VERSION=$(cat App/VERSION)
+        echo "version=$VERSION" >> $GITHUB_ENV
 
     - name: Helm install Applications
       uses: appleboy/ssh-action@v1.2.0
@@ -124,4 +130,4 @@ jobs:
             # Deploy Python App 
             helm upgrade --install python-app python-app \
               --set image.repository=${{ secrets.DOCKER_HUB_USERNAME }}/flask-app \
-              --set image.tag=latest
+              --set image.tag=${{ env.version }}

@@ -1,30 +1,50 @@
-Manual operations:
+# Photo Gallery Application
+
+A cloud-native photo gallery application built with Flask, AWS S3, MySQL, and Kubernetes. The application allows users to upload and view photos, storing them in S3 and maintaining metadata in MySQL.
+
+## Architecture
+
+- *Frontend*: Flask web application
+- *Backend Storage*: AWS S3 for photos, MySQL for metadata
+- *Infrastructure*: AWS (managed via Terraform)
+- *Container Orchestration*: Kubernetes (managed via Helm)
+- *CI/CD*: GitHub Actions
+
+## Prerequisites
+
+- AWS Account
+- Docker
+- Kubernetes
+- Helm
+- Terraform
+- Python 3.9+
+
+
+# Manual operations to run the project:
 1. Create S3 bucket for terraform state 'djans-backend-s3'
 2. Update SSH key of the lab in repository secrets.
 3. Update Bastion role to EMR_EC2_DefaultRole (existing role).
-4. SSH to Bastion & create GH runner on Bastion.
-5. Grant Admin permissions to EMR_EC2_DefaultRole.
-6. Add the following JSON to EMR-Role:
+4. Grant Admin permissions to EMR_EC2_DefaultRole (AdministratorAccess).
+5. SSH to Bastion & create GH runner on Bastion.
+6. Run terraform.
+7. Goto public IP of K8S_EC2/30080
 
-{
-	"Version": "2012-10-17",
-	"Statement": [
-		{
-			"Effect": "Allow",
-    		"Action": "s3:PutObject",
-			"Resource": "arn:aws:s3:::djans-photos-bucket/*"
-		},
-		{
-            "Effect": "Allow",
-            "Action": "s3:ListBucket",
-            "Resource": "arn:aws:s3:::djans-photos-bucket"
-        },
-        {
-            "Effect": "Allow",
-            "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::djans-photos-bucket/*"
-        }
-	]
-}
-7. Run terraform.
-8. Goto public IP of K8S_EC2/30080
+
+# Set up GitHub Secrets:
+   - AWS_ACCESS_KEY_ID
+   - AWS_SECRET_ACCESS_KEY
+   - DOCKER_HUB_USERNAME
+   - DOCKER_HUB_PASSWORD
+   - GIT_PAT
+   - GIT_USERNAME
+   - GIT_EMAIL
+   - EC2_SSH_KEY
+
+## Application Components
+
+### Flask Application
+- Photo upload functionality
+- Gallery view with presigned URLs
+- MySQL database integration
+- S3 storage integration
+
