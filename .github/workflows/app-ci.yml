@@ -61,6 +61,7 @@ jobs:
         pip install moto pytest-mock pytest-env
 
         # Update package lists and install MariaDB
+        sudo yum install -y amazon-linux-extras
         sudo amazon-linux-extras install -y mariadb10.5
         sudo yum clean metadata
         sudo yum install -y mariadb-server
