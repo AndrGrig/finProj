@@ -9,7 +9,7 @@ on:
       - 'helm/**'
       - '.github/workflows/app-cd.yml'
   workflow_run:
-    workflows: ["Application_CI", "Terraform_Infra"]
+    workflows: ["Application_CI", "Terraform_Infra", "K8S_Deployment"]
     types:
       - completed
 
