@@ -55,11 +55,6 @@ jobs:
         cd App
         PYTHONPATH=$PYTHONPATH:$(pwd) pytest tests/test_app.py
 
-    # - name: Run Integration Tests
-    #   run: |
-    #     cd App
-    #     PYTHONPATH=$PYTHONPATH:$(pwd) pytest tests/test_integration.py
-
     - name: Get Current Version
       id: get_version
       run: |
