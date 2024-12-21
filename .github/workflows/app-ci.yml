@@ -90,6 +90,9 @@ jobs:
         DATABASE_URL: "mysql+pymysql://root:mysecurepassword@localhost/photoDB_test"
         S3_BUCKET: "test-photos-bucket"
         FLASK_SECRET_KEY: "test-secret-key"
+        AWS_DEFAULT_REGION: "us-east-1"
+        AWS_ACCESS_KEY_ID: "testing"
+        AWS_SECRET_ACCESS_KEY: "testing"
       run: |
         cd App
         PYTHONPATH=$PYTHONPATH:$(pwd) pytest tests/test_integration.py -v
