@@ -86,10 +86,10 @@ jobs:
 
     - name: Run Integration Tests
       env:
+        FLASK_ENV: testing
         DATABASE_URL: "mysql+pymysql://root:mysecurepassword@localhost/photoDB_test"
-        S3_BUCKET: "djans-photos-bucket"
+        S3_BUCKET: "test-photos-bucket"
         FLASK_SECRET_KEY: "test-secret-key"
-        AWS_DEFAULT_REGION: "us-east-1"
       run: |
         cd App
         PYTHONPATH=$PYTHONPATH:$(pwd) pytest tests/test_integration.py -v

@@ -13,10 +13,16 @@ def aws_credentials():
     os.environ['AWS_SESSION_TOKEN'] = 'testing'
     os.environ['AWS_DEFAULT_REGION'] = 'us-east-1'
 
+# @pytest.fixture
+# def client():
+#     app = create_app()
+#     app.testing = True
+#     with app.test_client() as client:
+#         yield client
+
 @pytest.fixture
 def client():
-    app = create_app()
-    app.testing = True
+    app = create_app(testing=True)
     with app.test_client() as client:
         yield client
 
