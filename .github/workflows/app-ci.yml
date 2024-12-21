@@ -58,9 +58,9 @@ jobs:
     - name: Install Test Dependencies
       run: |
         pip install moto pytest-mock pytest-env
-        # Install and start MySQL for integration tests
-        sudo yum install -y mysql mysql-server
-        sudo service mysqld start
+        # Install and start MariaDB (MySQL alternative in Amazon Linux 2)
+        sudo yum install -y mariadb mariadb-server
+        sudo systemctl start mariadb
         sudo mysqladmin -u root password 'mysecurepassword'
 
     - name: Run Integration Tests
