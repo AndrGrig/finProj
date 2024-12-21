@@ -60,20 +60,22 @@ jobs:
         # Install Python dependencies
         pip install moto pytest-mock pytest-env
 
-        # Update package lists and install MariaDB
-        sudo yum install -y amazon-linux-extras
-        sudo amazon-linux-extras install -y mariadb10.5
-        sudo yum clean metadata
-        sudo yum install -y mariadb-server
-        
-        # Start MariaDB service
-        sudo systemctl start mariadb
-        
-        # Set root password (wait a bit for service to start)
-        sleep 5
-        sudo mysqladmin -u root password 'mysecurepassword'
+        # Run MySQL in Docker
+        docker run -d \
+          --name test-mysql \
+          -e MYSQL_ROOT_PASSWORD=mysecurepassword \
+          -e MYSQL_DATABASE=photoDB_test \
+          -p 3306:3306 \
+          mysql:5.7
+
+        # Wait for MySQL to be ready
+        sleep 20
 
     - name: Run Integration Tests
+      env:
+        DATABASE_URL: "mysql+pymysql://root:mysecurepassword@localhost/photoDB_test"
+        S3_BUCKET: "test-photos-bucket"
+        FLASK_SECRET_KEY: "test-secret-key"
       run: |
         cd App
         PYTHONPATH=$PYTHONPATH:$(pwd) pytest tests/test_integration.py
