@@ -13,6 +13,8 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+    
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Download parameter artifact from first workflow
         uses: actions/download-artifact@v4
