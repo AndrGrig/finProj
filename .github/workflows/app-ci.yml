@@ -93,6 +93,10 @@ jobs:
         AWS_DEFAULT_REGION: "us-east-1"
         AWS_ACCESS_KEY_ID: "testing"
         AWS_SECRET_ACCESS_KEY: "testing"
+        DB_HOST: "localhost"
+        DB_USER: "root"
+        DB_PASSWORD: "mysecurepassword"
+        DB_NAME: "photoDB_test"
       run: |
         cd App
         PYTHONPATH=$PYTHONPATH:$(pwd) pytest tests/test_integration.py -v
