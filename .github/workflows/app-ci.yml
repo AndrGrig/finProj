@@ -90,12 +90,7 @@ jobs:
     - name: Build Docker Image
       run: |
         VERSION=$(cat App/VERSION)
-        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app:${{ env.version }} App
-
-    # - name: Trivy Security Scan
-    #   uses: aquasecurity/trivy-action@0.28.0
-    #   with:
-    #     image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app:${{ env.version }}
+        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app:${{ env.new_version }} App
 
     - name: Create scan results directory
       run: mkdir -p scan-results
@@ -103,7 +98,7 @@ jobs:
     - name: Trivy Security Scan
       uses: aquasecurity/trivy-action@0.28.0
       with:
-        image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app:${{ env.version }}
+        image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app:${{ env.new_version }}
         format: 'table'
         output: 'scan-results/trivy-results.txt'
 
@@ -121,6 +116,6 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
     - name: Push Docker Image
-      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app:${{ env.version }}
+      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app:${{ env.new_version }}
 
     
