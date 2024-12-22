@@ -69,19 +69,6 @@ jobs:
         echo $NEW_VERSION > App/VERSION
         echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
 
-    - name: Commit Version Bump
-      env:
-        GIT_PAT: ${{ secrets.GIT_PAT }}
-        GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-        GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
-      run: |
-        git config user.name "$GIT_USERNAME"
-        git config user.email "$env.GIT_EMAIL"
-        git remote set-url origin https://${GIT_PAT}@github.com/${GIT_USERNAME}/finProj.git
-        git add App/VERSION
-        git commit -m "Bump version to ${{ env.new_version }}"
-        git push --force
-
     - name: Build Docker Image
       run: |
         VERSION=$(cat App/VERSION)
@@ -112,5 +99,18 @@ jobs:
 
     - name: Push Docker Image
       run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app:${{ env.new_version }}
+
+    - name: Commit Version Bump
+      env:
+        GIT_PAT: ${{ secrets.GIT_PAT }}
+        GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+        GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+      run: |
+        git config user.name "$GIT_USERNAME"
+        git config user.email "$env.GIT_EMAIL"
+        git remote set-url origin https://${GIT_PAT}@github.com/${GIT_USERNAME}/finProj.git
+        git add App/VERSION
+        git commit -m "Bump version to ${{ env.new_version }}"
+        git push --force
 
     
