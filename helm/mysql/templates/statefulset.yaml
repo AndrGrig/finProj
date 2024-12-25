@@ -39,6 +39,7 @@ spec:
   - metadata:
       name: mysql-persistent-storage
     spec:
+      storageClassName: ""
       volumeName: mysql-pv  # Reference the PV we created
       accessModes: ["ReadWriteOnce"]
       resources:
