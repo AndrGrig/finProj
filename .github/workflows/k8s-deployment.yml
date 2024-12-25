@@ -41,6 +41,9 @@ jobs:
           script: |
             sudo yum update -y
 
+            # Install git
+            sudo yum install -y git
+
             # Install Docker
             sudo yum install -y docker
             sudo systemctl start docker
@@ -80,3 +83,6 @@ jobs:
 
             # Verify cluster
             kubectl cluster-info --context kind-kind-cluster
+
+            # Install aws-ebs-csi driver
+            kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=master"
