@@ -17,73 +17,94 @@ jobs:
     if: github.event_name == 'push' ||
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     steps:
-      - name: Download parameter artifact from first workflow
-        uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ secrets.GIT_PAT }}
-          run-id: ${{ github.event.workflow_run.id }}
-          name: ec2-ip
+    - name: Get latest successful workflow run ID
+      run: |
+        # Fetch the latest successful workflow run using GitHub API
+        response=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.GIT_PAT }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/terraform-infra.yml/runs?status=success&per_page=1")
 
-      - name: Read parameters from the file and Get EC2 IP
-        run: |
-          EC2_IP=$(cat ec2_ip.txt | tr -d '\n\r')
-          echo "EC2_IP=${EC2_IP}" >> $GITHUB_ENV
-          echo "Found EC2 IP: ${EC2_IP}"
+        # Extract the latest successful run ID
+        latest_run_id=$(echo $response | jq -r '.workflow_runs[0].id')
+
+        if [ "$latest_run_id" != "null" ]; then
+          echo "Latest Successful Run ID of terraform-infra workflow: $latest_run_id"
+          echo "LATEST_RUN_ID=$latest_run_id" >> $GITHUB_ENV
+        else
+          echo "No successful runs found for terraform-infra workflow."
+          exit 1
+        fi
+        
+        echo "Latest Successful Run ID: $latest_run_id"
+
+    - name: Download ec2-ip artifact from first workflow
+      uses: actions/download-artifact@v4
+      with:
+        github-token: ${{ secrets.GIT_PAT }}
+        run-id: ${{ env.LATEST_RUN_ID }}
+        name: ec2-ip
+
+    - name: Read parameters from the file and get EC2 IP
+      run: |
+        EC2_IP=$(cat ec2_ip.txt | tr -d '\n\r')
+        echo "EC2_IP=${EC2_IP}" >> $GITHUB_ENV
+        echo "Found EC2 IP: ${EC2_IP}"
       
-      - name: Install Kind on EC2
-        uses: appleboy/ssh-action@v1.2.0
-        env:
-          EC2_IP: ${{ env.EC2_IP }}
-        with:
-          host: ${{ env.EC2_IP }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            sudo yum update -y
+    - name: Install Kind on EC2
+      uses: appleboy/ssh-action@v1.2.0
+      env:
+        EC2_IP: ${{ env.EC2_IP }}
+      with:
+        host: ${{ env.EC2_IP }}
+        username: ec2-user
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: |
+          sudo yum update -y
 
-            # Install git
-            sudo yum install -y git
+          # Install git
+          sudo yum install -y git
 
-            # Install Docker
-            sudo yum install -y docker
-            sudo systemctl start docker
-            sudo systemctl enable docker
-            sudo usermod -aG docker $USER
-            newgrp docker
-            sudo chmod 666 /var/run/docker.sock
+          # Install Docker
+          sudo yum install -y docker
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo usermod -aG docker $USER
+          newgrp docker
+          sudo chmod 666 /var/run/docker.sock
 
-            # Install Kind
-            curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
-            chmod +x ./kind
-            sudo mv ./kind /usr/local/bin/kind
+          # Install Kind
+          curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/kind
 
-            # Install kubectl
-            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-            chmod +x kubectl
-            sudo mv kubectl /usr/local/bin/kubectl
+          # Install kubectl
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/kubectl
 
-            # Verify kubectl installation
-            kubectl version --client
+          # Verify kubectl installation
+          kubectl version --client
 
-            # Create a Kind cluster
-            kind create cluster --name kind-cluster --config - <<EOF
-            kind: Cluster
-            apiVersion: kind.x-k8s.io/v1alpha4
-            nodes:
-            - role: control-plane
-              extraPortMappings:
-              - containerPort: 80
-                hostPort: 80
-              - containerPort: 443
-                hostPort: 443
-              - containerPort: 30080
-                hostPort: 30080
-                protocol: TCP
-            EOF
+          # Create a Kind cluster
+          kind create cluster --name kind-cluster --config - <<EOF
+          kind: Cluster
+          apiVersion: kind.x-k8s.io/v1alpha4
+          nodes:
+          - role: control-plane
+            extraPortMappings:
+            - containerPort: 80
+              hostPort: 80
+            - containerPort: 443
+              hostPort: 443
+            - containerPort: 30080
+              hostPort: 30080
+              protocol: TCP
+          EOF
 
-            # Verify cluster
-            kubectl cluster-info --context kind-kind-cluster
+          # Verify cluster
+          kubectl cluster-info --context kind-kind-cluster
 
-            # Install aws-ebs-csi driver
-            kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=master"
+          # Install aws-ebs-csi driver
+          kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=master"
