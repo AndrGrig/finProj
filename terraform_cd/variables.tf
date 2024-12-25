@@ -32,3 +32,8 @@ variable "mysql_volume_size" {
   default = 20
   description = "Size of the EBS volume for MySQL (in GB)"
 }
+
+variable "cidr_block_anywhere" {
+    default =  "0.0.0.0/0"
+    description = "Cidr block from anywhere"
+}

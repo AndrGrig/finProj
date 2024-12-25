@@ -21,7 +21,7 @@ A cloud-native photo gallery application built with Flask, AWS S3, MySQL, and Ku
 
 
 # Manual operations to run the project:
-1. Create S3 bucket for terraform state 'djans-backend-s3'
+1. Create S3 bucket for terraform state 'djans-backend-s3' with versioning.
 2. Update SSH key of the lab in repository secrets.
 3. Update Bastion role to EMR_EC2_DefaultRole (existing role).
 4. Grant Admin permissions to EMR_EC2_DefaultRole (AdministratorAccess).

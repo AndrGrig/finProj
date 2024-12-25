@@ -28,7 +28,7 @@ resource "aws_route_table" "main" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.cidr_block_anywhere
     gateway_id = aws_internet_gateway.main.id
   }
 
@@ -52,7 +52,7 @@ resource "aws_security_group" "k8s_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.cidr_block_anywhere]
   }
 
   ingress {
@@ -60,7 +60,7 @@ resource "aws_security_group" "k8s_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.cidr_block_anywhere]
   }
 
   ingress {
@@ -68,7 +68,7 @@ resource "aws_security_group" "k8s_sg" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.cidr_block_anywhere]
   }
 
   ingress {
@@ -76,14 +76,14 @@ resource "aws_security_group" "k8s_sg" {
     from_port   = 30080
     to_port     = 30080
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.cidr_block_anywhere]
   }
 
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.cidr_block_anywhere]
   }
 
   tags = {
