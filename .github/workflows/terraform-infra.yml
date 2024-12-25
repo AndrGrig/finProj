@@ -46,23 +46,33 @@ jobs:
       run: terraform apply -auto-approve tfplan
       working-directory: ./terraform_cd
 
-    - name: Get EC2 Public IP
-      id: get-ec2-ip
+    - name: Get EC2 Public IP and Volume ID
+      id: get-values-from-output #get-ec2-ip
       run: |
         unset TF_LOG
         EC2_PUBLIC_IP=$(terraform-bin output -raw ec2_public_ip | tr -d '\n')
         echo "ec2_ip=$EC2_PUBLIC_IP" >> $GITHUB_OUTPUT
+        EBS_VOLUME_ID=$(terraform-bin output -raw mysql_volume_id | tr -d '\n')
+        echo "volume_id=$EBS_VOLUME_ID" >> $GITHUB_OUTPUT
       working-directory: ./terraform_cd
 
-    - name: Save EC2 IP as artifact
+    - name: Save EC2 IP and Volume ID as artifact
       run: |
-        echo "${{ steps.get-ec2-ip.outputs.ec2_ip }}" > ec2_ip.txt
+        echo "${{ steps.get-values-from-output.outputs.ec2_ip }}" > ec2_ip.txt
+        echo "${{ steps.get-values-from-output.outputs.volume_id }}" > volume_id.txt
       
     - name: Upload EC2 IP artifact
       uses: actions/upload-artifact@v4
       with:
         name: ec2-ip
         path: ec2_ip.txt
+        retention-days: 1
+      
+    - name: Upload Volume ID artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: volume-id
+        path: volume_id.txt
         retention-days: 1
     
       

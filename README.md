@@ -27,7 +27,7 @@ A cloud-native photo gallery application built with Flask, AWS S3, MySQL, and Ku
 4. Grant Admin permissions to EMR_EC2_DefaultRole (AdministratorAccess).
 5. SSH to Bastion & create GH runner on Bastion.
 6. Run terraform.
-7. Goto public IP of K8S_EC2/30080
+7. Goto http://public_IP_of_K8S_EC2:30080 (i.e. http://34.201.3.118:30080)
 
 
 # Set up GitHub Secrets:

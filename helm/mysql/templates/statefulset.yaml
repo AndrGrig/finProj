@@ -39,7 +39,8 @@ spec:
   - metadata:
       name: mysql-persistent-storage
     spec:
+      volumeName: mysql-pv  # Reference the PV we created
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-          storage: 10Gi
+          storage: {{ .Values.mysql.storage }}

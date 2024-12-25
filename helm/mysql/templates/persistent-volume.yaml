@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv
+spec:
+  capacity:
+    storage: 20Gi  # In Terraform we defined EBS volume size also 20 Gi (mysql_volume_size)
+  accessModes:
+    - ReadWriteOnce
+  awsElasticBlockStore:
+    volumeID: {{ .Values.ebs.volumeId }}  # This will come from your Terraform output
+    fsType: ext4

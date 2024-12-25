@@ -1,6 +1,6 @@
 image:
   repository: agrigor1/flask-app
-  tag: latest
+  tag: "" # will be set during deployment
 
 service:
   nodePort: 30080

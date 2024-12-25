@@ -1,3 +1,6 @@
 mysql:
   rootPassword: mysecurepassword
   database: photoDB
+  storage: 10Gi
+  ebs:
+    volumeId: "" # will be set during deployment

@@ -27,13 +27,6 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-    # - name: Get latest successful workflow run ID
-    #   id: get_run_id
-    #   run: |
-    #     # Fetch the latest successful run ID for the "Terraform_Infra" workflow
-    #     run_id=$(gh run list --workflow=terraform-infra.yml --limit 1 --json status,url | jq -r '.[] | select(.status == "success") | .id' | head -n 1)
-    #     echo "Latest successful workflow run ID: $run_id"
-    #     echo "::set-output name=run_id::$run_id
     - name: Get latest successful workflow run ID
       run: |
         # Fetch the latest successful workflow run using GitHub API
@@ -46,27 +39,40 @@ jobs:
         latest_run_id=$(echo $response | jq -r '.workflow_runs[0].id')
 
         if [ "$latest_run_id" != "null" ]; then
-          echo "Latest Successful Run ID of test123 workflow: $latest_run_id"
+          echo "Latest Successful Run ID of terraform-infra workflow: $latest_run_id"
           echo "LATEST_RUN_ID=$latest_run_id" >> $GITHUB_ENV
         else
-          echo "No successful runs found for test123 workflow."
+          echo "No successful runs found for terraform-infra workflow."
           exit 1
         fi
         
         echo "Latest Successful Run ID: $latest_run_id"
 
-    - name: Download parameter artifact from first workflow
+    - name: Download ec2-ip artifact from first workflow
       uses: actions/download-artifact@v4
       with:
         github-token: ${{ secrets.GIT_PAT }}
         run-id: ${{ env.LATEST_RUN_ID }}
         name: ec2-ip
 
-    - name: Read parameters from the file and Get EC2 IP
+    - name: Read parameters from the file and get EC2 IP
       run: |
         EC2_IP=$(cat ec2_ip.txt | tr -d '\n\r')
         echo "EC2_IP=${EC2_IP}" >> $GITHUB_ENV
         echo "Found EC2 IP: ${EC2_IP}"
+
+    - name: Download volume-id artifact from first workflow
+      uses: actions/download-artifact@v4
+      with:
+        github-token: ${{ secrets.GIT_PAT }}
+        run-id: ${{ env.LATEST_RUN_ID }}
+        name: volume-id
+
+    - name: Read parameters from the file and get VOLUME ID
+      run: |
+        VOLUME_ID=$(cat volume_id.txt | tr -d '\n\r')
+        echo "VOLUME_ID=${VOLUME_ID}" >> $GITHUB_ENV
+        echo "Found VOLUME ID: ${VOLUME_ID}"
 
 
     - name: SSH and install Helm
@@ -125,7 +131,8 @@ jobs:
             mv python-app/chart.yaml python-app/Chart.yaml
             ls -la mysql/
             ls -la python-app/
-            helm upgrade --install mysql mysql --set mysql.rootPassword=mysecurepassword
+            helm upgrade --install mysql mysql --set mysql.rootPassword=mysecurepassword \
+              --set mysql.ebs.volumeId=${{ env.VOLUME_ID }}
 
             # Deploy Python App 
             helm upgrade --install python-app python-app \
