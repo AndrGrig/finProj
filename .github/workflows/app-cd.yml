@@ -132,7 +132,7 @@ jobs:
             ls -la mysql/
             ls -la python-app/
             helm upgrade --install mysql mysql --set mysql.rootPassword=mysecurepassword \
-              --set mysql.ebs.volumeId=${{ env.VOLUME_ID }}
+              --set ebs.volumeId=${{ env.VOLUME_ID }}
 
             # Deploy Python App 
             helm upgrade --install python-app python-app \
