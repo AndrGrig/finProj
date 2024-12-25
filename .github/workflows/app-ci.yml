@@ -106,6 +106,7 @@ jobs:
         GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
         GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
       run: |
+        pwd
         git config user.name "$GIT_USERNAME"
         git config user.email "$env.GIT_EMAIL"
         git remote set-url origin https://${GIT_PAT}@github.com/${GIT_USERNAME}/finProj.git
