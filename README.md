@@ -30,6 +30,15 @@ A cloud-native photo gallery application built with Flask, AWS S3, MySQL, and Ku
 7. Goto http://public_IP_of_K8S_EC2:30080 (i.e. http://34.201.3.118:30080)
 
 
+# Access to DB
+1. mysql -u root -p
+2. Enter the password: mysecurepassword
+3. SHOW DATABASES;
+4. USE photoDB;
+5. SHOW TABLES;
+6. SELECT * FROM photos;
+
+
 # Set up GitHub Secrets:
    - AWS_ACCESS_KEY_ID
    - AWS_SECRET_ACCESS_KEY
