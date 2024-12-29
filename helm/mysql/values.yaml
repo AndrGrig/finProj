@@ -1,5 +1,5 @@
 mysql:
-  rootPassword: "" # will be set during deployment
+  rootPassword: mysecurepassword
   database: photoDB
   storage: 20Gi
 ebs:

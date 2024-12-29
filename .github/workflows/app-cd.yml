@@ -132,7 +132,7 @@ jobs:
             mv python-app/chart.yaml python-app/Chart.yaml
             ls -la mysql/
             ls -la python-app/
-            helm upgrade --install mysql mysql --set mysql.rootPassword=${{ secrets.DB_PASSWD }} \
+            helm upgrade --install mysql mysql --set mysql.rootPassword=mysecurepassword \
               --set ebs.volumeId=${{ env.VOLUME_ID }}
 
             # Deploy Python App 
