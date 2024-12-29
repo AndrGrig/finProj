@@ -14,7 +14,7 @@ on:
       - completed
 
 jobs:
-  deploy:
+  APP-deploy:
     runs-on: self-hosted
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
@@ -132,7 +132,7 @@ jobs:
             mv python-app/chart.yaml python-app/Chart.yaml
             ls -la mysql/
             ls -la python-app/
-            helm upgrade --install mysql mysql --set mysql.rootPassword=mysecurepassword \
+            helm upgrade --install mysql mysql --set mysql.rootPassword=${{ secrets.DB_PASSWD }} \
               --set ebs.volumeId=${{ env.VOLUME_ID }}
 
             # Deploy Python App 
