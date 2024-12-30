@@ -138,12 +138,6 @@ resource "aws_ebs_volume" "mysql_volume" {
   }
 }
 
-resource "aws_volume_attachment" "mysql_attachment" {
-  instance_id = aws_instance.k8s_node.id
-  volume_id   = aws_ebs_volume.mysql_volume.id
-  device_name = "/dev/xvdf"
-}
-
 resource "aws_s3_bucket" "photos_bucket" {
   bucket = var.bucket_name
 
