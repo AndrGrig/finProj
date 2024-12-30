@@ -13,8 +13,7 @@ jobs:
   terraform:
     runs-on: self-hosted
     outputs:
-      ec2_ip: ${{ steps.get-ec2-ip.outputs.ec2_ip }}
-      
+      ec2_ip: ${{ steps.get-ec2-ip.outputs.ec2_ip }} 
 
     steps:
     - name: Checkout Code
